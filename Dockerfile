@@ -7,4 +7,4 @@ ENV PORT=4000
 
 COPY . /app
 
-CMD ["node", "."]
+CMD ["npm", "start"]
