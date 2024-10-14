@@ -1,8 +1,4 @@
-import express from 'express'
-
-const app = express()
-
-app.use(express.static('client'))
+import { app } from './server/app.js'
 
 const port = process.env.PORT || 4000
 

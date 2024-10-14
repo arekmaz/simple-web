@@ -7,9 +7,10 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build:css": "tailwindcss -i client/tailwind.css -o client/index.css",
     "start": "npm run build:css && node .",
-    "dev": "npx nodemon -w client -e html,css,js --exec 'npm start'"
+    "dev": "npx nodemon -w client -w server -w index.js -e html,css,js --exec 'npm start'"
   },
   "dependencies": {
+    "better-sqlite3": "^11.3.0",
     "express": "^4.21.1"
   },
   "devDependencies": {
