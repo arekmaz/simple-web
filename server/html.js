@@ -9,6 +9,8 @@ const encodeHTMLRules = {
 
 const matchHTML = /&(?!#?\w+;)|<|>|"|'|\//g
 
+const escaped = Symbol.for('encodeHTML::escaped')
+
 const encodeHTML = (s) => {
   return typeof s === "string"
     ? s.replace(matchHTML, (m) => encodeHTMLRules[m] || m)
@@ -19,7 +21,7 @@ export const html = (body, ...chunks) => {
   let result = body[0]
 
   for (let i = 0 ; i < chunks.length ; i++) {
-    result += encodeHTML(chunks[i]) + body[i + 1]
+    result += chunks[i][escaped] ? encodeHTML(chunks[i]) : chunks[i] + body[i + 1]
   }
 
   return result
