@@ -16,7 +16,21 @@ const getTodos = db.prepare("select * from todos");
 
 const Todo = (props) => html`
   <li class="flex gap-3 items-center justify-between">
-    <p>${props.title} - ${props.done ? "Done" : "Not done"}</p>
+    <form action="/edit-todos/${props.id}" method="POST" class="flex gap-2">
+      <label class="flex gap-2 items-center">
+        Title
+        <input name="title" value="${props.title}" class="border" />
+      </label>
+
+      <label>
+        <input name="done" type="checkbox" checked=${props.done === 1} />
+      </label>
+
+      <button type="submit" class="bg-green-300 border p-1 rounded-md">
+        Save
+      </button>
+    </form>
+
     <form action="/delete-todos/${props.id}" method="POST">
       <button type="submit" class="bg-red-300 border p-1 rounded-md">
         Delete
@@ -72,6 +86,10 @@ const addTodo = db.prepare("insert into todos (title) values (@title)");
 
 app.post("/todos", (req, res) => {
   console.log({ body: req.body });
+  if (!req.body.title) {
+    return res.status(400).send("title required");
+  }
+
   addTodo.run({ title: req.body.title });
   return res.redirect("/");
 });
@@ -82,5 +100,20 @@ app.post("/delete-todos/:id", (req, res) => {
   const { id } = req.params;
 
   deleteTodo.run({ id });
+  return res.redirect("/");
+});
+
+const updateTodo = db.prepare(
+  "update todos set title=@title, done=@done where id=@id",
+);
+
+app.post("/edit-todos/:id", (req, res) => {
+  const { id } = req.params;
+
+  if (!req.body.title) {
+    return res.status(400).send("title required");
+  }
+
+  updateTodo.run({ id, title: req.body.title, done: req.body.done ? 1 : 0 });
   return res.redirect("/");
 });
