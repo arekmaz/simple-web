@@ -7,4 +7,6 @@ ENV PORT=4000
 
 COPY . /app
 
+RUN npm ci
+
 CMD ["npm", "start"]
