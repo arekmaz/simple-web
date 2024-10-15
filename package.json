@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build:css": "tailwindcss -i client/tailwind.css -o client/index.css",
+    "build:css": "npx tailwindcss -i client/tailwind.css -o client/index.css",
     "start": "npm run build:css && node .",
     "dev": "npx nodemon -w client -w server -w index.js -e html,css,js --exec 'npm start'"
   },

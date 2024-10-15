@@ -15,8 +15,13 @@ app.use(express.static("client"));
 const getTodos = db.prepare("select * from todos");
 
 const Todo = (props) => html`
-  <li>
+  <li class="flex gap-3 items-center justify-between">
     <p>${props.title} - ${props.done ? "Done" : "Not done"}</p>
+    <form action="/delete-todos/${props.id}" method="POST">
+      <button type="submit" class="bg-red-300 border p-1 rounded-md">
+        Delete
+      </button>
+    </form>
   </li>
 `;
 
@@ -31,7 +36,7 @@ app.get("/", (_req, res) => {
           <form action=/todos method=POST class="flex p-5 flex-col gap-5 border rounded-md">
             <label class="flex flex-col items-center">
               Title
-              <input name=title required placeholder="Do laundry" />
+              <input autofocus name=title required placeholder="Do laundry" />
             </label>
 
             <button class="text-red-500">Add todo</button>
@@ -68,5 +73,14 @@ const addTodo = db.prepare("insert into todos (title) values (@title)");
 app.post("/todos", (req, res) => {
   console.log({ body: req.body });
   addTodo.run({ title: req.body.title });
+  return res.redirect("/");
+});
+
+const deleteTodo = db.prepare("delete from todos where id=@id");
+
+app.post("/delete-todos/:id", (req, res) => {
+  const { id } = req.params;
+
+  deleteTodo.run({ id });
   return res.redirect("/");
 });
